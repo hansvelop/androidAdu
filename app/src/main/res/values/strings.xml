@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">androidLab</string>
+    <string name="http_www_google_com">http://www.google.com 동해물과 백두산이 마르고 닳도록 하느님이 보우 하사 우리나라만세</string>
+    <string name="click_me">Click Me!!</string>
 </resources>
