@@ -1,17 +1,20 @@
 package com.example.pjt_student1;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     Button testBtn;
     ImageView addBtn;
+
+    double initTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,5 +38,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
 
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            if(System.currentTimeMillis() - initTime > 3000){
+                Toast toast = Toast.makeText(this,R.string.main_back_end, Toast.LENGTH_SHORT);
+                toast.show();
+            }else{
+                finish();
+            }
+            initTime = System.currentTimeMillis();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+
+
     }
 }
