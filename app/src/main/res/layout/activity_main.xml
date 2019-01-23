@@ -27,7 +27,8 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:contentDescription="TODO"
-        android:src="@drawable/imagetest" />
+        android:src="@drawable/imagetest"
+        android:layout_gravity="center" />
 
     <Button
         android:id="@+id/btn"

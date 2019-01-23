@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".DetailActivity">
+
+    <ImageView
+        android:id="@+id/detail_student_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:clickable="true"
+        android:maxWidth="150px"
+        android:maxHeight="150px"
+        android:src="@drawable/ic_student_small" />
+
+    <TextView
+        android:id="@+id/detail_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/detail_student_image"
+        android:text="hansvelop"
+        android:textSize="25dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/detail_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/detail_student_image"
+        android:layout_marginTop="16dp"
+        android:autoLink="phone"
+        android:text="010-4102-1652" />
+
+    <TextView
+        android:id="@+id/detail_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/detail_student_image"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="15dp"
+        android:autoLink="email"
+        android:text="hsw1824@gmail.com" />
+
+    <TabHost
+        android:id="@+id/host"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/detail_email"
+        android:layout_marginTop="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/detail_score_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="score list"/>
+                <TextView
+                    android:id="@+id/detail_score_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="score chart"/>
+                <include layout="@layout/score_add"
+                    android:id="@+id/detail_score_add"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+                <TextView
+                    android:id="@+id/detail_score_memo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="score memo"/>
+
+            </FrameLayout>
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+            </TabWidget>
+        </LinearLayout>
+
+
+    </TabHost>
+
+</RelativeLayout>
