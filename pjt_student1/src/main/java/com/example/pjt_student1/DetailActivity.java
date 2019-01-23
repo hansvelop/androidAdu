@@ -24,6 +24,8 @@ public class DetailActivity extends AppCompatActivity {
     TextView addScoreView;
     Button btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9,btn0,btnBack,btnAdd;
 
+    MyView scoreView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,15 +37,16 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void initData(){
-        studentImageView=findViewById(R.id.detail_student_image);
-        nameView=findViewById(R.id.detail_name);
-        phoneView=findViewById(R.id.detail_phone);
-        emailView=findViewById(R.id.detail_email);
+        studentImageView = findViewById(R.id.detail_student_image);
+        nameView = findViewById(R.id.detail_name);
+        phoneView = findViewById(R.id.detail_phone);
+        emailView = findViewById(R.id.detail_email);
+        scoreView = findViewById(R.id.detail_score);
 
         DBHelper helper = new DBHelper(this);
         SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from tb_student order by _id desc",new String[]{});
-//        Cursor cursor = db.rawQuery("select * from tb_student where _id = ? order by _id desc", new String[]{String.valueOf(studentId)});
+//        Cursor cursor = db.rawQuery("select * from tb_student order by _id desc",new String[]{});
+        Cursor cursor = db.rawQuery("select * from tb_student where _id = ? order by _id desc", new String[]{String.valueOf(studentId)});
 
         String photo = null;
         if(cursor.moveToFirst()){
@@ -51,6 +54,14 @@ public class DetailActivity extends AppCompatActivity {
             emailView.setText(cursor.getString(2));
             phoneView.setText(cursor.getString(3));
             photo = cursor.getString(4);
+
+            Cursor scoreCursor = db.rawQuery("select score from tb_score " +
+                    "where student_id = ? order by date desc", new String[]{String.valueOf(studentId)});
+            int score = 0;
+            if(scoreCursor.moveToFirst()){
+                score = scoreCursor.getInt(0);
+            }
+            scoreView.setScore(score);
         }
         db.close();
 
@@ -129,6 +140,7 @@ public class DetailActivity extends AppCompatActivity {
 
                 host.setCurrentTab(0);
                 addScoreView.setText("0");
+                scoreView.setScore(Integer.parseInt(score));
             }else if(v == btnBack){
                 String score = addScoreView.getText().toString();
                 if(score.length() == 1){
