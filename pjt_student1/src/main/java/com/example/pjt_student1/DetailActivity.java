@@ -134,7 +134,7 @@ public class DetailActivity extends AppCompatActivity {
                 DBHelper helper = new DBHelper(DetailActivity.this);
                 SQLiteDatabase db = helper.getWritableDatabase();
                 db.execSQL("insert into tb_score (student_id, date, score) " +
-                        "values (?,?,?)", new String[]{String.valueOf(3), String.valueOf(date), score});
+                        "values (?,?,?)", new String[]{String.valueOf(studentId), String.valueOf(date), score});
 
                 db.close();
 
