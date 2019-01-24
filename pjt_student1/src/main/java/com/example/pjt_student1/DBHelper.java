@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
-        super(context, "studentdb", null, 1);
+        super(context, "studentdb", null, 2);
     }
 
     @Override
@@ -16,6 +16,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "name not null, " +
                 "email," +
                 "phone," +
+                "photo," +
                 "memo)";
         String scoreSql = "create table tb_score(" +
                 "_id integer primary key autoincrement," +

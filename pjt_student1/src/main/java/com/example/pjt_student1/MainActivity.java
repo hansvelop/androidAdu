@@ -1,6 +1,8 @@
 package com.example.pjt_student1;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -10,14 +12,19 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+import java.util.ArrayList;
 
-    Button testBtn;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
+
+//    Button testBtn;
     ImageView addBtn;
+    ListView listView;
+    ArrayList<StudentVO> datas;
 
     double initTime;
 
@@ -28,11 +35,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        testBtn = findViewById(R.id.main_test_btn);
+//        testBtn = findViewById(R.id.main_test_btn);
         addBtn = findViewById(R.id.main_btn);
+        listView = findViewById(R.id.main_list);
 
-        testBtn.setOnClickListener(this);
+//        testBtn.setOnClickListener(this);
+        listView.setOnItemClickListener(this);
         addBtn.setOnClickListener(this);
+
+        datas = new ArrayList<>();
+        DBHelper helper = new DBHelper(this);
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from tb_student order by name", null);
+
+        while(cursor.moveToNext()){
+            StudentVO vo = new StudentVO();
+            vo.id = cursor.getInt(0);
+            vo.name = cursor.getString(1);
+            vo.email = cursor.getString(2);
+            vo.phone = cursor.getString(3);
+            vo.photo = cursor.getString(4);
+            vo.memo = cursor.getString(5);
+            datas.add(vo);
+        }
+        db.close();
+
+        MainListAdapter adapter = new MainListAdapter(this, R.layout.main_list_item, datas);
+        listView.setAdapter(adapter);
     }
 
     @Override
@@ -40,11 +69,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(v == addBtn){
             Intent intent= new Intent(this, AddActivity.class);
             startActivity(intent);
-        }else if(v==testBtn){
+//        }else if(v==testBtn){
+        }else if(v==listView){
             Intent intent= new Intent(this, DetailActivity.class);
             startActivity(intent);
-
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent= new Intent(this, DetailActivity.class);
+        startActivity(intent);
     }
 
     @Override

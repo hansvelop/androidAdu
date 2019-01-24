@@ -16,9 +16,16 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -28,12 +35,16 @@ public class DetailActivity extends AppCompatActivity {
     TextView emailView;
     TabHost host;
 
-    int studentId = 2;
+    int studentId = 1;
 
     TextView addScoreView;
     Button btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9,btn0,btnBack,btnAdd;
 
     MyView scoreView;
+
+    ListView listView;
+    ArrayList<HashMap<String, String>> scoreList;
+    SimpleAdapter sa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +55,7 @@ public class DetailActivity extends AppCompatActivity {
         initTab();
         initAddScore();
         initSpannable();
+        initList();
 
     }
 
@@ -158,6 +170,16 @@ public class DetailActivity extends AppCompatActivity {
                 host.setCurrentTab(0);
                 addScoreView.setText("0");
                 scoreView.setScore(Integer.parseInt(score));
+
+                HashMap<String, String> map = new HashMap<>();
+                map.put("score", score);
+                Date d = new Date(date);
+                SimpleDateFormat sd = new SimpleDateFormat("yyyy-mm-dd");
+                map.put("date", sd.format(d));
+                scoreList.add(map);
+
+                sa.notifyDataSetChanged();
+
             }else if(v == btnBack){
                 String score = addScoreView.getText().toString();
                 if(score.length() == 1){
@@ -215,6 +237,30 @@ public class DetailActivity extends AppCompatActivity {
         htmlView.setText(Html.fromHtml(html, new MyImageGetter(), null));
     }
 
+    private void initList(){
+        listView = findViewById(R.id.detail_score_list);
+        scoreList = new ArrayList<>();
+
+        DBHelper helper = new DBHelper(this);
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select score, date from tb_score where student_id = ? order by date desc ",
+                new String[]{String.valueOf(studentId)});
+        while (cursor.moveToFirst()){
+            HashMap<String, String> map = new HashMap<>();
+            map.put("score", cursor.getString(0));
+            Date d = new Date(Long.parseLong(cursor.getString(1)));
+            SimpleDateFormat sd = new SimpleDateFormat("yyyy-mm-dd");
+            map.put("date", sd.format(d));
+            scoreList.add(map);
+        }
+        db.close();
+
+        sa = new SimpleAdapter(this, scoreList, R.layout.read_list_item, new String[]{"score", "date"}, new int[]{R.id.read_list_score, R.id.read_list_date});
+
+        listView.setAdapter(sa);
+
+    }
+
     class MyImageGetter implements Html.ImageGetter{
         @Override
         public Drawable getDrawable(String source) {
@@ -226,4 +272,5 @@ public class DetailActivity extends AppCompatActivity {
             return null;
         }
     }
+
 }
