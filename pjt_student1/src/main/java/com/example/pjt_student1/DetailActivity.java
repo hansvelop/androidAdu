@@ -2,8 +2,17 @@ package com.example.pjt_student1;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.URLSpan;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -34,6 +43,14 @@ public class DetailActivity extends AppCompatActivity {
         initData();
         initTab();
         initAddScore();
+        initSpannable();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void initData(){
@@ -167,4 +184,46 @@ public class DetailActivity extends AppCompatActivity {
             }
         }
     };
+
+    private void initSpannable(){
+        TextView spanView = findViewById(R.id.spanView);
+        TextView htmlView = findViewById(R.id.htmlView);
+
+        URLSpan urlSpan = new URLSpan(""){
+            @Override
+            public void onClick(View widget) {
+                Toast toast = Toast.makeText(DetailActivity.this, "more click", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        };
+
+        String data = spanView.getText().toString();
+        Spannable spannable = (Spannable)spanView.getText();
+
+        int pos = data.indexOf("EXID");
+        while(pos > -1){
+            spannable.setSpan(new ForegroundColorSpan(Color.DKGRAY), pos, pos+4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            pos = data.indexOf("EXID", pos+1);
+        }
+        pos = data.indexOf("more");
+        spannable.setSpan(urlSpan, pos, pos+4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        spanView.setMovementMethod(LinkMovementMethod.getInstance());
+
+        String html ="<font color='blue'> HANI</fond><br /><img src='myImage'/>";
+
+        htmlView.setText(Html.fromHtml(html, new MyImageGetter(), null));
+    }
+
+    class MyImageGetter implements Html.ImageGetter{
+        @Override
+        public Drawable getDrawable(String source) {
+            if(source.equals("myImage")){
+                Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.hani_1, null);
+                drawable.setBounds(0,0,drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                return drawable;
+            }
+            return null;
+        }
+    }
 }
