@@ -1,9 +1,11 @@
 package com.example.pjt_student1;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
@@ -59,6 +62,9 @@ public class DetailActivity extends AppCompatActivity implements TabHost.OnTabCh
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        Intent intent = getIntent();
+        studentId = intent.getIntExtra("id", 1);
 
         initData();
         initTab();
@@ -388,6 +394,38 @@ public class DetailActivity extends AppCompatActivity implements TabHost.OnTabCh
         if(tabId.equals("tab2")){
             webView.loadUrl("file:///android_asset/test.html");
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String sendData = scoreList.get(0).get("score")+" - "+ scoreList.get(0).get("date");
+        int id = item.getItemId();
+        if(id == R.id.menu_detail_sms){
+            String phoneNumber = phoneView.getText().toString();
+            if(phoneNumber != null && !phoneNumber.equals("")) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("smsto:" + phoneNumber));
+                intent.putExtra("sms_body", sendData);
+                startActivity(intent);
+            }
+        }else if(id == R.id.menu_detail_email){
+            String email = emailView.getText().toString();
+            if(email != null && !email.equals("")){
+                String mailto = "mailto:"+email+"?subject="+Uri.encode("score")+"&body="+Uri.encode(sendData);
+
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse(mailto));
+
+                try{
+                    startActivity(intent);
+                }catch (Exception e){
+                    Toast.makeText( this, "no email app", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 

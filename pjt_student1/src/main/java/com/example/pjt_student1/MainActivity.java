@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent= new Intent(this, DetailActivity.class);
+        intent.putExtra("id",datas.get(position).id);
         startActivity(intent);
     }
 
