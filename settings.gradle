@@ -1,1 +1,1 @@
-include ':app', ':pjt_student1'
+include ':app', ':pjt_student', ':pjt_student1'

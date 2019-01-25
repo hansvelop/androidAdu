@@ -75,11 +75,10 @@
                     android:id="@+id/detail_score_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
-                <TextView
+                <WebView
                     android:id="@+id/detail_score_chart"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="score chart"/>
+                    android:layout_height="match_parent"/>
                 <include layout="@layout/score_add"
                     android:id="@+id/detail_score_add"
                     android:layout_width="match_parent"

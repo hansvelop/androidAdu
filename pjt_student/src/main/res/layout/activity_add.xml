@@ -1,9 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".AddActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <!--
+    View 가 여러개여서 화면이 벗어나거나.. 하나의 view content가 길어서
+    화면을 벗어나거나.. 자동 스크롤 지원하지 않는다..
+    스크롤 해야할 영역을 꼭 ScrollView로 감싸야 한다..
+
+    ScrollView 하위에는 하나의 view 만 add 가능..
+    -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="Name" />
+                <!--
+                한줄 입력 강제...
+                singleLine="true" : deprecated....
+                lines="1" : 화면에 한줄로 고정되는 거지.. 그 안에서 무한 입력..
+                maxLine="1" : lines="3" 이면 초기부터 3줄로 고정이고.. maxLine="3" 이면
+                초기에 한줄로 보이다가.. 3줄까지는 늘어나고 더이상 늘어나지 않는다..
+                그 안에서 무한입력은 되고..
+
+                ==>현시점 모든 키보드 제어는 inputType 으로 일원화..
+                -->
+                <EditText
+                    android:id="@+id/add_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:inputType="text" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="Email" />
+                <!--
+                inputType="textEmailAddress" : 한줄 입력 강제 & 키보드 이메일 모드
+                여러라인 허용하려면 inputType="textEmailAddress|textMultiLine"
+                -->
+                <EditText
+                    android:id="@+id/add_email"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:inputType="textEmailAddress" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="Phone" />
+
+                <EditText
+                    android:id="@+id/add_phone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:inputType="phone" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="Memo" />
+
+                <EditText
+                    android:id="@+id/add_memo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:lines="9" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/add_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="add" />
+
+</LinearLayout>

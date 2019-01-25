@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
-        super(context, "studentdb", null, 2);
+        super(context, "studentdb", null, 4);
     }
 
     @Override
