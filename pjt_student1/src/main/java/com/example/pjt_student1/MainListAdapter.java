@@ -53,11 +53,11 @@ public class MainListAdapter extends ArrayAdapter<StudentVO> {
         final StudentVO vo = datas.get(position);
 
         nameView.setText(vo.name);
-
+        Log.d("adaptor img", vo.photo);
         if(vo.photo != null && !vo.photo.equals("")){
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize=10;
-            Bitmap bitmap = BitmapFactory.decodeFile(vo.phone,options);
+            Bitmap bitmap = BitmapFactory.decodeFile(vo.photo,options);
             if(bitmap != null){
                 studentImageView.setImageBitmap(bitmap);
             }
@@ -101,7 +101,7 @@ public class MainListAdapter extends ArrayAdapter<StudentVO> {
                     Log.d("phone ", vo.phone);
                     intent.setData(Uri.parse("tel:"+vo.phone));
                     context.startActivity(intent);
-                    
+
                 }
             }
         });

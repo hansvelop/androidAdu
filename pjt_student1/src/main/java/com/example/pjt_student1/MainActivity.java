@@ -130,7 +130,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             datas.add(vo);
         }
         db.close();
-
         MainListAdapter adapter = new MainListAdapter(this, R.layout.main_list_item, datas);
         listView.setAdapter(adapter);
     }
