@@ -97,7 +97,7 @@ public class MainListAdapter extends ArrayAdapter<StudentVO> {
             public void onClick(View v) {
                 if(vo.phone != null && !vo.phone.equals("")){
                     Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_DIAL);
+                    intent.setAction(Intent.ACTION_CALL);
                     Log.d("phone ", vo.phone);
                     intent.setData(Uri.parse("tel:"+vo.phone));
                     context.startActivity(intent);

@@ -3,10 +3,14 @@ package com.example.pjt_student1;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -35,7 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 //두번째 tab 화면을 여는순간 html  로딩 하려고..
-public class DetailActivity extends AppCompatActivity implements TabHost.OnTabChangeListener{
+public class DetailActivity extends AppCompatActivity implements TabHost.OnTabChangeListener, View.OnClickListener{
 
     ImageView studentImageView;
     TextView nameView;
@@ -106,6 +110,9 @@ public class DetailActivity extends AppCompatActivity implements TabHost.OnTabCh
             scoreView.setScore(score);
         }
         db.close();
+
+        studentImageView.setOnClickListener(this);
+        initStudentImage(photo);
 
     }
     private void initTab(){
@@ -426,6 +433,53 @@ public class DetailActivity extends AppCompatActivity implements TabHost.OnTabCh
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initStudentImage(String photo){
+        if(photo != null && !photo.equals("")){
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 10;
+            Bitmap bitmap = BitmapFactory.decodeFile(photo);
+            if(bitmap != null){
+                studentImageView.setImageBitmap(bitmap);
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_PICK);
+        intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+
+        startActivityForResult(intent, 10);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 10 && resultCode == RESULT_OK){
+            Uri uri = data.getData();
+            String[] columns = {MediaStore.Images.Media.DATA};
+
+            Cursor cursor = getContentResolver().query(uri, columns, null,null,null);
+            cursor.moveToFirst();
+
+            String filePath = cursor.getString(0);
+            Log.d("image path", filePath);
+            cursor.close();
+
+            if(filePath != null){
+                DBHelper helper = new DBHelper(this);
+                SQLiteDatabase db = helper.getWritableDatabase();
+                db.execSQL("update tb_student set photo = ? where _id = ?", new String[]{filePath,String.valueOf(studentId)});
+                db.close();
+
+                initStudentImage(filePath);
+            }
+
+        }
     }
 }
 

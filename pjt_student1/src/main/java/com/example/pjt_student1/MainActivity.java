@@ -43,25 +43,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         listView.setOnItemClickListener(this);
         addBtn.setOnClickListener(this);
 
-        datas = new ArrayList<>();
-        DBHelper helper = new DBHelper(this);
-        SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from tb_student order by name", null);
-
-        while(cursor.moveToNext()){
-            StudentVO vo = new StudentVO();
-            vo.id = cursor.getInt(0);
-            vo.name = cursor.getString(1);
-            vo.email = cursor.getString(2);
-            vo.phone = cursor.getString(3);
-            vo.photo = cursor.getString(4);
-            vo.memo = cursor.getString(5);
-            datas.add(vo);
-        }
-        db.close();
-
-        MainListAdapter adapter = new MainListAdapter(this, R.layout.main_list_item, datas);
-        listView.setAdapter(adapter);
     }
 
     @Override
@@ -129,4 +110,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return false;
         }
     };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        datas = new ArrayList<>();
+        DBHelper helper = new DBHelper(this);
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from tb_student order by name", null);
+
+        while(cursor.moveToNext()){
+            StudentVO vo = new StudentVO();
+            vo.id = cursor.getInt(0);
+            vo.name = cursor.getString(1);
+            vo.email = cursor.getString(2);
+            vo.phone = cursor.getString(3);
+            vo.photo = cursor.getString(4);
+            vo.memo = cursor.getString(5);
+            datas.add(vo);
+        }
+        db.close();
+
+        MainListAdapter adapter = new MainListAdapter(this, R.layout.main_list_item, datas);
+        listView.setAdapter(adapter);
+    }
 }
