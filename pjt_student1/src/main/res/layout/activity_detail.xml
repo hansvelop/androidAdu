@@ -78,7 +78,8 @@
                 <WebView
                     android:id="@+id/detail_score_chart"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:isScrollContainer="false"/>
                 <include layout="@layout/score_add"
                     android:id="@+id/detail_score_add"
                     android:layout_width="match_parent"

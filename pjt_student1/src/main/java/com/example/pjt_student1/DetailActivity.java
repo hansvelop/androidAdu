@@ -357,7 +357,7 @@ public class DetailActivity extends AppCompatActivity implements TabHost.OnTabCh
             StringBuffer buffer=new StringBuffer();
             buffer.append("[");
             if(scoreList.size()<=10){
-                int j=0;
+                int j=1;
                 for(int i=scoreList.size(); i>0; i--){
                     buffer.append("["+j+",");
                     buffer.append(scoreList.get(i-1).get("score"));
@@ -367,7 +367,7 @@ public class DetailActivity extends AppCompatActivity implements TabHost.OnTabCh
 
                 }
             }else {
-                int j=0;
+                int j=1;
                 for(int i=10; i>0; i--){
                     buffer.append("["+j+",");
                     buffer.append(scoreList.get(i-1).get("score"));
