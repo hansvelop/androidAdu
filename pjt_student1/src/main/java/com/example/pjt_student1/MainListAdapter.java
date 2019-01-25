@@ -101,6 +101,7 @@ public class MainListAdapter extends ArrayAdapter<StudentVO> {
                     Log.d("phone ", vo.phone);
                     intent.setData(Uri.parse("tel:"+vo.phone));
                     context.startActivity(intent);
+                    
                 }
             }
         });
