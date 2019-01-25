@@ -1,10 +1,16 @@
 package com.example.pjt_student;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -14,6 +20,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
@@ -32,7 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 //두번째 tab 화면을 여는순간 html  로딩 하려고..
-public class DetailActivity extends AppCompatActivity implements TabHost.OnTabChangeListener{
+public class DetailActivity extends AppCompatActivity implements TabHost.OnTabChangeListener, View.OnClickListener{
 
     ImageView studentImageView;
     TextView nameView;
@@ -59,6 +66,10 @@ public class DetailActivity extends AppCompatActivity implements TabHost.OnTabCh
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        //자신을 실행시킨 intent 획득..
+        Intent intent=getIntent();
+        studentId=intent.getIntExtra("id", 1);
 
         initData();
         initTab();
@@ -101,6 +112,9 @@ public class DetailActivity extends AppCompatActivity implements TabHost.OnTabCh
         }
         db.close();
 
+
+        studentImageView.setOnClickListener(this);
+        initStudentImage(photo);
     }
     private void initTab(){
         host=findViewById(R.id.host);
@@ -387,6 +401,118 @@ public class DetailActivity extends AppCompatActivity implements TabHost.OnTabCh
     public void onTabChanged(String tabId) {
         if(tabId.equals("tab2")){
             webView.loadUrl("file:///android_asset/test.html");
+        }
+    }
+    //menu 이벤트 처리 함수..
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //전송데이터..
+        String sendData=scoreList.get(0).get("score")+" - "+
+                scoreList.get(0).get("date");
+        //이벤트 발생 menu id 획득..
+        int id=item.getItemId();
+        if(id==R.id.menu_detail_sms){
+            String phoneNumber=phoneView.getText().toString();
+            if(phoneNumber != null && !phoneNumber.equals("")){
+                //sms app의 sms 발송 activity를 intent로...
+                Intent intent=new Intent();
+                intent.setAction(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("smsto:"+phoneNumber));
+                intent.putExtra("sms_body", sendData);
+                startActivity(intent);
+            }
+        }else if(id==R.id.menu_detail_email){
+            //email app의 발송 activity...
+            String email=emailView.getText().toString();
+            if(email != null && !email.equals("")){
+                String mailto="mailto:"+email+
+                        "?subject="+Uri.encode("score")+
+                        "&body="+Uri.encode(sendData);
+                Intent intent=new Intent();
+                intent.setAction(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse(mailto));
+                //email app이 기본앱이 아니다..유저 폰에 이 정보로 실행될
+                //app이 없을수도 있다..
+                //없으면 에러난다..
+                try{
+                    startActivity(intent);
+                }catch (Exception e){
+                    Toast toast=Toast.makeText(this,
+                            "no email app", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            }
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void initStudentImage(String photo){
+        if(photo != null && !photo.equals("")){
+            BitmapFactory.Options options=new BitmapFactory.Options();
+            options.inSampleSize=10;
+            Bitmap bitmap=BitmapFactory.decodeFile(photo);
+            if(bitmap != null){
+                studentImageView.setImageBitmap(bitmap);
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        //gallery app의 목록 화면 intent로...
+        Intent intent=new Intent();
+        intent.setAction(Intent.ACTION_PICK);
+        intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        //결과 되돌려 받아야 한다..
+        startActivityForResult(intent, 10);
+    }
+    //startActivityForResult 에 의한 요청이 되돌아 올때 호출..
+    //requestCode : intent를 발생시킨 곳에서.. intent를 구분하기 위해 준
+    //개발자 임의 숫자...
+    //resultCode : intent에 의해 실행된 곳에서.. 결과를 되돌리기 전에..
+    //요청 처리를 어떻게 처리했다를 지정...
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==10 && resultCode==RESULT_OK){
+            //gallery app에서 사진 한장 선택해서 되돌아 오면 사진의 경로가
+            //넘어오지 않는다.. 선택한 사진을 식별하기 위한 식별자 값만
+            //넘어온다.. url 정보로.. url의 맨 마지막 문자열이 식별자..
+
+            //식별자를 조건으로 다시 gallery app에게 구체적으로 원하는 데이터를
+            //요청.. ContentProvider 이용..
+            Uri uri=data.getData();
+            //획득하고자 하는 데이터..
+            String[] columns={MediaStore.Images.Media.DATA};//경로..
+
+            //데이터 요청..
+            Cursor cursor=getContentResolver().query(
+                    uri,
+                    columns,
+                    null,null,null);
+
+            cursor.moveToFirst();
+
+            String filePath=cursor.getString(0);
+
+            Log.d("kkang", filePath);
+            cursor.close();
+
+            if(filePath != null){
+                //이후 사용을 위해 db 에 저장..
+                DBHelper helper=new DBHelper(this);
+                SQLiteDatabase db=helper.getWritableDatabase();
+                db.execSQL("update tb_student set photo=? where _id=?",
+                        new String[]{filePath,
+                                        String.valueOf(studentId)});
+                db.close();
+
+                //화면출력..
+                initStudentImage(filePath);
+            }
+
         }
     }
 }

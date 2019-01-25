@@ -42,6 +42,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addBtn.setOnClickListener(this);
         listView.setOnItemClickListener(this);
 
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         datas=new ArrayList<>();
         DBHelper helper=new DBHelper(this);
         SQLiteDatabase db=helper.getReadableDatabase();
@@ -63,12 +70,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MainListAdapter adapter=new MainListAdapter(this,
                 R.layout.main_list_item, datas);
         listView.setAdapter(adapter);
-
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent=new Intent(this, DetailActivity.class);
+        intent.putExtra("id", datas.get(position).id);
         startActivity(intent);
     }
 
